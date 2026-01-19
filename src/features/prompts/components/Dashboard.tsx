@@ -79,11 +79,12 @@ export default function Dashboard() {
         isLoading={isLoading}
         onClose={() => setOpen(false)}
         onSubmit={async (values) => {
-          if (editing) {
-            await updatePrompt(editing.id, values);
-          } else {
-            await createPrompt(values);
-          }
+          const ok = editing
+            ? await updatePrompt(editing.id, values)
+            : await createPrompt(values);
+
+          if (!ok) return;
+
           setOpen(false);
         }}
       />

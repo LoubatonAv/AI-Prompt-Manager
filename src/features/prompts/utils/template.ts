@@ -19,6 +19,10 @@ export function extractVariables(template: string): string[] {
   return vars;
 }
 
+export function hasEmptyVariables(template: string): boolean {
+  return /\{\s*\}/.test(template);
+}
+
 export function buildFinalPrompt(
   template: string,
   values: Record<string, string>,

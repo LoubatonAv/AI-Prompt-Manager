@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
 import type { Prompt, PromptCategory } from "../types";
 import { useLocalStorageState } from "../../../global/hooks/useLocalStorageState";
+import { hasEmptyVariables } from "../utils/template";
 
 type CategoryFilter = PromptCategory | "All";
 
@@ -24,8 +25,8 @@ type PromptsContextValue = {
   selectPrompt: (id: string) => void;
 
   isLoading: boolean;
-  createPrompt: (draft: PromptDraft) => Promise<void>;
-  updatePrompt: (id: string, draft: PromptDraft) => Promise<void>;
+  createPrompt: (draft: PromptDraft) => Promise<boolean>;
+  updatePrompt: (id: string, draft: PromptDraft) => Promise<boolean>;
   deletePrompt: (id: string) => Promise<void>;
 
   exportPrompts: () => void;
@@ -102,6 +103,13 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
   }, [prompts, search, categoryFilter]);
 
   async function createPrompt(draft: PromptDraft) {
+    if (hasEmptyVariables(draft.template)) {
+      alert(
+        'Empty variable names are not allowed. Remove "{}" or "{   }" before saving.',
+      );
+      return false;
+    }
+
     setIsLoading(true);
     await sleep(300);
 
@@ -118,9 +126,17 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
     setPrompts((prev) => [newPrompt, ...prev]);
     setSelectedPromptId(newPrompt.id);
     setIsLoading(false);
+
+    return true;
   }
 
   async function updatePrompt(id: string, draft: PromptDraft) {
+    if (hasEmptyVariables(draft.template)) {
+      alert(
+        'Empty variable names are not allowed. Remove "{}" or "{   }" before saving.',
+      );
+      return false;
+    }
     setIsLoading(true);
     await sleep(300);
 
@@ -140,6 +156,8 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
     );
 
     setIsLoading(false);
+
+    return true;
   }
 
   async function deletePrompt(id: string) {
@@ -170,7 +188,6 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
 
     URL.revokeObjectURL(url);
   }
-
   async function importPrompts(file: File) {
     setIsLoading(true);
 
@@ -191,15 +208,18 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
           createdAt: typeof p.createdAt === "number" ? p.createdAt : Date.now(),
           updatedAt: typeof p.updatedAt === "number" ? p.updatedAt : Date.now(),
         }))
-        .filter((p) => p.title && p.template);
+        .filter((p) => p.title && p.template)
+        .filter((p) => !hasEmptyVariables(p.template));
 
-      if (imported.length === 0) throw new Error("No valid prompts");
+      if (imported.length === 0) {
+        alert('Import failed: all prompts contain empty variable names "{}".');
+        return;
+      }
 
-      // Replace existing prompts with imported prompts (simple + clear)
       setPrompts(imported);
       setSelectedPromptId(imported[0]?.id ?? null);
     } catch {
-      alert("Invalid JSON file");
+      alert("Invalid JSON file - empty variable detected");
     } finally {
       setIsLoading(false);
     }

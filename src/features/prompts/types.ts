@@ -6,4 +6,5 @@ export type Prompt = {
   category: PromptCategory;
   template: string;
   createdAt: number;
+  updatedAt: number;
 };

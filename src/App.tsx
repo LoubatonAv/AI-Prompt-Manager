@@ -2,7 +2,7 @@ import AppShell from "./app/layout/AppShell";
 import { PromptsProvider } from "./features/prompts/context/PromptsContext";
 import Dashboard from "./features/prompts/components/Dashboard";
 
-function App() {
+export default function App() {
   return (
     <PromptsProvider>
       <AppShell>
@@ -11,5 +11,3 @@ function App() {
     </PromptsProvider>
   );
 }
-
-export default App;

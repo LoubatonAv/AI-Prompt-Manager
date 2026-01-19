@@ -45,6 +45,10 @@ Users can store prompts by category, search/filter them, and generate a final pr
 - I assumed this is a personal prompt library used by a single user, so storing data in LocalStorage is sufficient.
 - I also assumed prompt variables are defined using curly brackets ({topic}) and do not require complex validation.
 
+## Link to GitHUB pages.
+
+- https://loubatonav.github.io/AI-Prompt-Manager/
+
 ## How to Run
 
 ```bash

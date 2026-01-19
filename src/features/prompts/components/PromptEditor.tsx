@@ -87,7 +87,7 @@ export default function PromptEditor() {
           <button
             onClick={copyToClipboard}
             disabled={!finalPrompt}
-            className="btn"
+            className="btn cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             {copied ? "Copied!" : "Copy"}
           </button>

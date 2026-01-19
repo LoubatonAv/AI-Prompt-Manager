@@ -27,6 +27,9 @@ type PromptsContextValue = {
   createPrompt: (draft: PromptDraft) => Promise<void>;
   updatePrompt: (id: string, draft: PromptDraft) => Promise<void>;
   deletePrompt: (id: string) => Promise<void>;
+
+  exportPrompts: () => void;
+  importPrompts: (file: File) => Promise<void>;
 };
 
 const PromptsContext = createContext<PromptsContextValue | null>(null);
@@ -57,15 +60,19 @@ function sleep(ms: number) {
 }
 
 function generateId() {
-  if ("randomUUID" in crypto) return crypto.randomUUID();
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 export function PromptsProvider({ children }: { children: React.ReactNode }) {
+  // ✅ Persist prompts in localStorage
   const [prompts, setPrompts] = useLocalStorageState<Prompt[]>(
     STORAGE_KEY,
     SEED,
   );
+
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("All");
   const [isLoading, setIsLoading] = useState(false);
@@ -86,8 +93,10 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
         !q ||
         p.title.toLowerCase().includes(q) ||
         p.template.toLowerCase().includes(q);
+
       const matchesCategory =
         categoryFilter === "All" || p.category === categoryFilter;
+
       return matchesSearch && matchesCategory;
     });
   }, [prompts, search, categoryFilter]);
@@ -95,6 +104,7 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
   async function createPrompt(draft: PromptDraft) {
     setIsLoading(true);
     await sleep(300);
+
     const now = Date.now();
     const newPrompt: Prompt = {
       id: generateId(),
@@ -104,7 +114,8 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
       createdAt: now,
       updatedAt: now,
     };
-    setPrompts((p) => [newPrompt, ...p]);
+
+    setPrompts((prev) => [newPrompt, ...prev]);
     setSelectedPromptId(newPrompt.id);
     setIsLoading(false);
   }
@@ -112,28 +123,86 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
   async function updatePrompt(id: string, draft: PromptDraft) {
     setIsLoading(true);
     await sleep(300);
+
     const now = Date.now();
-    setPrompts((p) =>
-      p.map((x) =>
-        x.id === id
+    setPrompts((prev) =>
+      prev.map((p) =>
+        p.id === id
           ? {
-              ...x,
-              title: draft.title,
+              ...p,
+              title: draft.title.trim(),
               category: draft.category,
               template: draft.template,
               updatedAt: now,
             }
-          : x,
+          : p,
       ),
     );
+
     setIsLoading(false);
   }
 
   async function deletePrompt(id: string) {
     setIsLoading(true);
     await sleep(300);
-    setPrompts((p) => p.filter((x) => x.id !== id));
+
+    setPrompts((prev) => prev.filter((p) => p.id !== id));
+
+    // if deleted prompt was selected, pick first available
+    setSelectedPromptId((current) => {
+      if (current !== id) return current;
+      const remaining = prompts.filter((p) => p.id !== id);
+      return remaining[0]?.id ?? null;
+    });
+
     setIsLoading(false);
+  }
+
+  function exportPrompts() {
+    const data = JSON.stringify(prompts, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ai-prompts.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+  async function importPrompts(file: File) {
+    setIsLoading(true);
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+
+      if (!Array.isArray(parsed)) throw new Error("Invalid format");
+
+      // light validation + normalize
+      const imported: Prompt[] = parsed
+        .filter((p) => p && typeof p === "object")
+        .map((p) => ({
+          id: typeof p.id === "string" ? p.id : generateId(),
+          title: String(p.title ?? "").trim(),
+          category: (p.category ?? "Other") as PromptCategory,
+          template: String(p.template ?? ""),
+          createdAt: typeof p.createdAt === "number" ? p.createdAt : Date.now(),
+          updatedAt: typeof p.updatedAt === "number" ? p.updatedAt : Date.now(),
+        }))
+        .filter((p) => p.title && p.template);
+
+      if (imported.length === 0) throw new Error("No valid prompts");
+
+      // Replace existing prompts with imported prompts (simple + clear)
+      setPrompts(imported);
+      setSelectedPromptId(imported[0]?.id ?? null);
+    } catch {
+      alert("Invalid JSON file");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -152,6 +221,8 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
         createPrompt,
         updatePrompt,
         deletePrompt,
+        exportPrompts,
+        importPrompts,
       }}
     >
       {children}

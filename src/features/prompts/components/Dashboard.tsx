@@ -1,4 +1,5 @@
 import PromptList from "./PromptList";
+import SearchFilterBar from "./SearchFilterBar";
 
 export default function Dashboard() {
   return (
@@ -10,6 +11,7 @@ export default function Dashboard() {
         </p>
       </div>
 
+      <SearchFilterBar />
       <PromptList />
     </div>
   );

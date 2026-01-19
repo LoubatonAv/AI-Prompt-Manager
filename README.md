@@ -1,73 +1,53 @@
-# React + TypeScript + Vite
+# AI Prompt Manager (Personal Prompt Library)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small frontend app to create, organize, and test AI prompts.  
+Users can store prompts by category, search/filter them, and generate a final prompt by filling template variables like `{topic}`.
 
-Currently, two official plugins are available:
+## Features (Core Requirements)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Prompt dashboard (list view)
+  - Title + category shown per prompt
+  - Search + category filter
+  - Empty states
+  - Responsive layout
+- Prompt CRUD
+  - Create / edit / delete prompts
+  - Simulated loading for better UX patterns
+  - Persistence via LocalStorage
+- Dynamic template engine
+  - Detect variables inside `{}` in real time (supports spacing and duplicates)
+  - Auto-generate inputs for detected variables
+  - Live “Final Prompt Preview”
+  - Copy-to-clipboard button for final prompt
+- Dark / Light mode toggle (Tailwind v4)
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React + TypeScript (Vite)
+- State management: React Context API
+- Styling: Tailwind CSS v4
+- Persistence: LocalStorage
 
-## Expanding the ESLint configuration
+## Architectural Decisions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- I used React with the Context API because multiple components need access to the same prompt data, and Context is a simple solution without over-engineering.
+- TypeScript is used mainly for data models and component props to catch basic mistakes and keep the code clearer, without using advanced patterns.
+- LocalStorage is used for persistence since no backend was required, and it allows prompts to persist across refreshes with minimal complexity.
+- The template logic (detecting variables and building the final prompt) is implemented as small utility functions to keep UI components simple and focused on rendering.
+- Tailwind CSS v4 was chosen for fast styling and consistency, and dark mode is implemented using the built-in dark class approach recommended in Tailwind v4.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## One Thing I Would Improve With More Time
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- I would improve how the app handles a larger number of prompts, for example by adding pagination.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Assumptions
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- I assumed this is a personal prompt library used by a single user, so storing data in LocalStorage is sufficient.
+- I also assumed prompt variables are defined using curly brackets ({topic}) and do not require complex validation.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## How to Run
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```

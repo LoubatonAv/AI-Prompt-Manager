@@ -11,20 +11,19 @@ type PromptDraft = {
 };
 
 type PromptsContextValue = {
-  // data
   prompts: Prompt[];
   filteredPrompts: Prompt[];
 
-  // ui state
-  isLoading: boolean;
   search: string;
   categoryFilter: CategoryFilter;
+  setSearch: (v: string) => void;
+  setCategoryFilter: (v: CategoryFilter) => void;
 
-  // ui actions
-  setSearch: (value: string) => void;
-  setCategoryFilter: (value: CategoryFilter) => void;
+  selectedPromptId: string | null;
+  selectedPrompt: Prompt | null;
+  selectPrompt: (id: string) => void;
 
-  // crud
+  isLoading: boolean;
   createPrompt: (draft: PromptDraft) => Promise<void>;
   updatePrompt: (id: string, draft: PromptDraft) => Promise<void>;
   deletePrompt: (id: string) => Promise<void>;
@@ -58,9 +57,7 @@ function sleep(ms: number) {
 }
 
 function generateId() {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return crypto.randomUUID();
-  }
+  if ("randomUUID" in crypto) return crypto.randomUUID();
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
@@ -69,23 +66,28 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
     STORAGE_KEY,
     SEED,
   );
-
-  const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("All");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [selectedPromptId, setSelectedPromptId] = useState<string | null>(
+    prompts[0]?.id ?? null,
+  );
+
+  const selectedPrompt = useMemo(() => {
+    if (!selectedPromptId) return null;
+    return prompts.find((p) => p.id === selectedPromptId) ?? null;
+  }, [prompts, selectedPromptId]);
 
   const filteredPrompts = useMemo(() => {
     const q = search.trim().toLowerCase();
-
     return prompts.filter((p) => {
       const matchesSearch =
-        q.length === 0 ||
+        !q ||
         p.title.toLowerCase().includes(q) ||
         p.template.toLowerCase().includes(q);
-
       const matchesCategory =
         categoryFilter === "All" || p.category === categoryFilter;
-
       return matchesSearch && matchesCategory;
     });
   }, [prompts, search, categoryFilter]);
@@ -93,7 +95,6 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
   async function createPrompt(draft: PromptDraft) {
     setIsLoading(true);
     await sleep(300);
-
     const now = Date.now();
     const newPrompt: Prompt = {
       id: generateId(),
@@ -103,38 +104,35 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
       createdAt: now,
       updatedAt: now,
     };
-
-    setPrompts((prev) => [newPrompt, ...prev]);
+    setPrompts((p) => [newPrompt, ...p]);
+    setSelectedPromptId(newPrompt.id);
     setIsLoading(false);
   }
 
   async function updatePrompt(id: string, draft: PromptDraft) {
     setIsLoading(true);
     await sleep(300);
-
     const now = Date.now();
-    setPrompts((prev) =>
-      prev.map((p) =>
-        p.id === id
+    setPrompts((p) =>
+      p.map((x) =>
+        x.id === id
           ? {
-              ...p,
-              title: draft.title.trim(),
+              ...x,
+              title: draft.title,
               category: draft.category,
               template: draft.template,
               updatedAt: now,
             }
-          : p,
+          : x,
       ),
     );
-
     setIsLoading(false);
   }
 
   async function deletePrompt(id: string) {
     setIsLoading(true);
     await sleep(300);
-
-    setPrompts((prev) => prev.filter((p) => p.id !== id));
+    setPrompts((p) => p.filter((x) => x.id !== id));
     setIsLoading(false);
   }
 
@@ -143,11 +141,14 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
       value={{
         prompts,
         filteredPrompts,
-        isLoading,
         search,
         categoryFilter,
         setSearch,
         setCategoryFilter,
+        selectedPromptId,
+        selectedPrompt,
+        selectPrompt: setSelectedPromptId,
+        isLoading,
         createPrompt,
         updatePrompt,
         deletePrompt,

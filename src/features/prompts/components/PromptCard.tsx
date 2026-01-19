@@ -17,23 +17,24 @@ export default function PromptCard({
 }: Props) {
   return (
     <div
+      onClick={onSelect}
       className={`rounded-xl border bg-white dark:bg-slate-900 p-4 transition ${
         isActive
           ? "border-slate-500"
           : "border-slate-200 dark:border-slate-800 hover:border-slate-700"
       }`}
     >
-      <button onClick={onSelect} className="block w-full text-left">
+      <button className="block w-full text-left">
         <h3 className="font-semibold">{prompt.title}</h3>
         <p className="mt-1 text-sm text-slate-400">{prompt.category}</p>
         <p className="mt-2 text-sm text-slate-300">{prompt.template}</p>
       </button>
 
       <div className="mt-4 flex gap-2">
-        <button onClick={onEdit} className="btn-secondary">
+        <button onClick={onEdit} className="btn cursor-pointer">
           Edit
         </button>
-        <button onClick={onDelete} className="btn-secondary">
+        <button onClick={onDelete} className="btn cursor-pointer">
           Delete
         </button>
       </div>

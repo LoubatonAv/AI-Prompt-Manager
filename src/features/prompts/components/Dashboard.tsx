@@ -25,11 +25,14 @@ export default function Dashboard() {
         <h2 className="text-lg font-semibold">Prompt Dashboard</h2>
 
         <div className="flex gap-2">
-          <button onClick={exportPrompts} className="btn">
+          <button onClick={exportPrompts} className="btn cursor-pointer">
             Export
           </button>
 
-          <button onClick={() => fileRef.current?.click()} className="btn">
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="btn cursor-pointer"
+          >
             Import
           </button>
 
@@ -38,7 +41,7 @@ export default function Dashboard() {
               setEditing(null);
               setOpen(true);
             }}
-            className="btn-primary"
+            className="btn-primary cursor-pointer"
           >
             + New Prompt
           </button>

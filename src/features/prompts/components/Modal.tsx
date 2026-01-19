@@ -13,7 +13,7 @@ export default function Modal({ open, title, onClose, children }: ModalProps) {
   return (
     <div className="fixed inset-0 z-50">
       <button
-        className="absolute inset-0 bg-black/60"
+        className="absolute inset-0 bg-black/60 cursor-pointer"
         onClick={onClose}
         aria-label="Close modal"
       />
@@ -22,7 +22,7 @@ export default function Modal({ open, title, onClose, children }: ModalProps) {
           <h2 className="text-sm font-semibold">{title}</h2>
           <button
             onClick={onClose}
-            className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2 py-1 text-sm hover:border-slate-700"
+            className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2 py-1 text-sm hover:border-slate-700 cursor-pointer"
           >
             ✕
           </button>

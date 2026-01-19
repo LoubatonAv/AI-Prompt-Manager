@@ -3,6 +3,10 @@
 A small frontend app to create, organize, and test AI prompts.  
 Users can store prompts by category, search/filter them, and generate a final prompt by filling template variables like `{topic}`.
 
+## Time Spent:
+
+- Around 2-3 hours.
+
 ## Features (Core Requirements)
 
 - Prompt dashboard (list view)

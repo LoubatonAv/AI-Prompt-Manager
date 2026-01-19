@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePrompts } from "../context/PromptsContext";
 import type { Prompt } from "../types";
 import SearchFilterBar from "./SearchFilterBar";
@@ -17,7 +17,25 @@ export default function Dashboard() {
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Prompt | null>(null);
+
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const [loadingPrompts, setLoadingPrompts] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoadingPrompts(false), 1000);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (loadingPrompts) {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center gap-3">
+        <div className="text-sm text-slate-500 dark:text-slate-400">
+          Fetching Prompts…
+        </div>
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-300 border-t-slate-900 dark:border-slate-700 dark:border-t-slate-100" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

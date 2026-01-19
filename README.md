@@ -5,7 +5,7 @@ Users can store prompts by category, search/filter them, and generate a final pr
 
 ## Time Spent:
 
-- Around 3-4 hours.
+- Around 5 hours.
 
 ## Features (Core Requirements)
 

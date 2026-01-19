@@ -10,7 +10,7 @@ export function useTheme() {
   });
 
   useEffect(() => {
-    const root = document.documentElement; // <html>
+    const root = document.documentElement;
     root.classList.toggle("dark", theme === "dark");
     localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);

@@ -68,7 +68,6 @@ function generateId() {
 }
 
 export function PromptsProvider({ children }: { children: React.ReactNode }) {
-  // ✅ Persist prompts in localStorage
   const [prompts, setPrompts] = useLocalStorageState<Prompt[]>(
     STORAGE_KEY,
     SEED,
@@ -166,7 +165,6 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
 
     setPrompts((prev) => prev.filter((p) => p.id !== id));
 
-    // if deleted prompt was selected, pick first available
     setSelectedPromptId((current) => {
       if (current !== id) return current;
       const remaining = prompts.filter((p) => p.id !== id);
@@ -197,7 +195,6 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
 
       if (!Array.isArray(parsed)) throw new Error("Invalid format");
 
-      // light validation + normalize
       const imported: Prompt[] = parsed
         .filter((p) => p && typeof p === "object")
         .map((p) => ({

@@ -17,10 +17,10 @@ export default function PromptCard({
 }: Props) {
   return (
     <div
-      className={`rounded-xl border bg-slate-900 p-4 transition ${
+      className={`rounded-xl border bg-white dark:bg-slate-900 p-4 transition ${
         isActive
           ? "border-slate-500"
-          : "border-slate-800 hover:border-slate-700"
+          : "border-slate-200 dark:border-slate-800 hover:border-slate-700"
       }`}
     >
       <button onClick={onSelect} className="block w-full text-left">

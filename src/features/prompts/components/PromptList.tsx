@@ -17,7 +17,7 @@ export default function PromptList({ onEditPrompt }: Props) {
 
   if (filteredPrompts.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-800 bg-slate-900/30 p-6 text-center">
+      <div className="rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/30 p-6 text-center">
         No prompts found
       </div>
     );

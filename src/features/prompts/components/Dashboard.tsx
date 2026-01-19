@@ -12,7 +12,7 @@ export default function Dashboard() {
   const [editing, setEditing] = useState<Prompt | null>(null);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-white dark:bg-slate-950">
       <div className="flex justify-between">
         <h2 className="text-lg font-semibold">Prompt Dashboard</h2>
         <button
@@ -20,7 +20,7 @@ export default function Dashboard() {
             setEditing(null);
             setOpen(true);
           }}
-          className="btn-primary"
+          className="btn"
         >
           + New Prompt
         </button>

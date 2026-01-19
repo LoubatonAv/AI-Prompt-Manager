@@ -17,12 +17,12 @@ export default function Modal({ open, title, onClose, children }: ModalProps) {
         onClick={onClose}
         aria-label="Close modal"
       />
-      <div className="relative mx-auto mt-20 w-[92%] max-w-xl rounded-2xl border border-slate-800 bg-slate-950 shadow">
-        <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
+      <div className="relative mx-auto mt-20 w-[92%] max-w-xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-950 shadow">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-4 py-3">
           <h2 className="text-sm font-semibold">{title}</h2>
           <button
             onClick={onClose}
-            className="rounded-lg border border-slate-800 bg-slate-900 px-2 py-1 text-sm hover:border-slate-700"
+            className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2 py-1 text-sm hover:border-slate-700"
           >
             ✕
           </button>

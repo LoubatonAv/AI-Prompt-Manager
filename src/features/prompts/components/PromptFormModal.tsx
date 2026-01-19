@@ -69,7 +69,7 @@ export default function PromptFormModal({
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 outline-none focus:border-slate-600"
+            className="w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 outline-none focus:border-slate-600"
           />
         </div>
 
@@ -80,7 +80,7 @@ export default function PromptFormModal({
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value as PromptCategory)}
-            className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 outline-none focus:border-slate-600"
+            className="w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 outline-none focus:border-slate-600"
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
@@ -98,7 +98,7 @@ export default function PromptFormModal({
             value={template}
             onChange={(e) => setTemplate(e.target.value)}
             rows={5}
-            className="w-full resize-none rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 outline-none focus:border-slate-600"
+            className="w-full resize-none rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 outline-none focus:border-slate-600"
           />
           <p className="mt-1 text-xs text-slate-500">
             Use variables like {"{topic}"}.
@@ -109,7 +109,7 @@ export default function PromptFormModal({
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm hover:border-slate-700 disabled:opacity-50"
+            className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm hover:border-slate-700 disabled:opacity-50"
           >
             Cancel
           </button>

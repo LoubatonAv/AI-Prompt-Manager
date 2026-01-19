@@ -18,7 +18,7 @@ export default function SearchFilterBar() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search prompts..."
-        className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 outline-none focus:border-slate-600 md:max-w-md"
+        className="input md:max-w-md"
       />
 
       <select
@@ -26,7 +26,7 @@ export default function SearchFilterBar() {
         onChange={(e) =>
           setCategoryFilter(e.target.value as PromptCategory | "All")
         }
-        className="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 outline-none focus:border-slate-600 md:w-56"
+        className="input md:w-56"
       >
         {CATEGORIES.map((c) => (
           <option key={c} value={c}>
